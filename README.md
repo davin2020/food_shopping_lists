@@ -1,5 +1,5 @@
-# Task Battleships
-Going to try & make a site using JavaScript where you can add tasks to a battlship grid, and select an unknown/random task to do next. 
+# Food Shopping Lists
+Going to try & make a site using JavaScript where you can add items to a food shopping list template, then copy the template for each weeks shopping
 
 (Coming Soon)
 # food_shopping_lists
