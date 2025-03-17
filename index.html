@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping List Manager</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #1a73e8;
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 2px solid #1a73e8;
+            font-size: 24px;
+        }
+
+        .section {
+            background: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: #1a73e8;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .primary-button {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+            transition: background-color 0.3s;
+            width: auto;
+            min-width: 150px;
+        }
+
+        .primary-button:hover {
+            background-color: #1557b0;
+        }
+
+        .template-item, .list-item {
+            background: #f8f9fa;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .item-details {
+            margin-bottom: 10px;
+        }
+
+        .item-details h3 {
+            color: #202124;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .item-details p {
+            color: #5f6368;
+            font-size: 14px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .action-buttons button {
+          /*
+            background-color: #fff;
+            border: 1px solid #1a73e8;
+            color: #1a73e8;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            flex: 1;
+            min-width: 120px;
+            white-space: nowrap; */
+
+background-color: #fff;
+    border: 1px solid #1a73e8;
+    color: #1a73e8;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    margin: 0 5px;
+        }
+
+        .action-buttons button:hover {
+            background-color: #1a73e8;
+            color: white;
+        }
+
+	/* Make sure View/Edit buttons match the style */
+.list-item button,
+.template-item button {
+    background-color: #fff;
+    border: 1px solid #1a73e8;
+    color: #1a73e8;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 14px;
+    margin: 0 5px;
+}
+
+.list-item button:hover,
+.template-item button:hover {
+    background-color: #1a73e8;
+    color: white;
+}
+
+
+        /* Mobile-specific styles */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 20px;
+                padding: 15px 0;
+                margin-bottom: 20px;
+            }
+
+            .section {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+
+            h2 {
+                font-size: 18px;
+                margin-bottom: 15px;
+            }
+
+            .template-item, .list-item {
+                padding: 12px;
+            }
+
+            .item-details h3 {
+                font-size: 15px;
+            }
+
+            .item-details p {
+                font-size: 13px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons button {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .primary-button {
+                width: 100%;
+                font-size: 15px;
+            }
+        }
+
+        /* Tablet-specific styles */
+        @media (min-width: 601px) and (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .action-buttons button {
+                min-width: 140px;
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) {
+            .action-buttons button {
+                padding: 12px 16px;
+            }
+
+            .primary-button {
+                padding: 14px 20px;
+            }
+        }
+
+        /* new styling checkboxs */
+        .custom-checkbox {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+        border: 2px solid #1a73e8;
+        border-radius: 4px;
+        outline: none;
+        transition: all 0.3s;
+    }
+
+    .custom-checkbox:checked {
+        background-color: #4CAF50;
+        border-color: #4CAF50;
+        position: relative;
+    }
+
+    .custom-checkbox:checked::after {
+        content: '✓';
+        position: absolute;
+        color: white;
+        font-size: 16px;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .custom-checkbox:hover {
+        border-color: #4CAF50;
+    }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Shopping List Manager BLUE MOBILE</h1>
+
+        <div class="section">
+            <h2>Shopping List Templates</h2>
+            <button id="newTemplateBtn" class="primary-button">New Template</button>
+            
+            <div id="templatesContainer">
+                <div class="template-item">
+                    <div class="item-details">
+                        <h3>Weekly Groceries</h3>
+                        <p>Items: 12</p>
+                    </div>
+                    <div class="action-buttons">
+                        <button>Create new list from this template</button>
+                        <button>Edit</button>
+                    </div>
+                </div>
+
+                <div class="template-item">
+                    <div class="item-details">
+                        <h3>Monthly Household Items</h3>
+                        <p>Items: 8</p>
+                    </div>
+                    <div class="action-buttons">
+                        <button>Create new list from this template</button>
+                        <button>Edit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Active Shopping Lists</h2>
+
+            <!--TBC TODO Importing & Exporing button options  -->
+            <!-- <div class="action-buttons" style="margin-bottom: 15px;">
+                <button onclick="shoppingListManager.exportAllData()" class="primary-button">Export Lists</button>
+                <input type="file" id="importFile" accept=".json" style="display: none;" onchange="shoppingListManager.importData(event)">
+                <button onclick="document.getElementById('importFile').click()" class="primary-button">Import Lists</button>
+            </div> -->
+
+            <div id="listsContainer">
+                <div class="list-item">
+                    <div class="item-details">
+                        <h3>Weekly Groceries - Jan 15, 2024</h3>
+                        <p>Created: 15/01/2024</p>
+                    </div>
+                    <div class="action-buttons">
+                        <button>View</button>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="item-details">
+                        <h3>Monthly Household Items - January</h3>
+                        <p>Created: 01/01/2024</p>
+                    </div>
+                    <div class="action-buttons">
+                        <button>View</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="browser-info" style="margin-top: 20px; padding: 10px; border-top: 1px solid #ccc;">
+            <p id="browserInfo">Browser Information: Loading...</p>
+        </div>
+
+    </div>
+
+	
+
+    <script src="app.js"></script>
+</body>
+</html>
